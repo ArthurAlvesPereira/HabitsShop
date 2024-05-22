@@ -11,4 +11,14 @@ const colors = {
     black: '#000000'
 }
 
-export { colors}
+const styles = {
+    button: {
+        backgroundColor: colors.primary,
+        color: colors.white,
+        padding: 10,
+        borderRadius: 5,
+        textAlign: 'center'
+    }
+}
+export {styles}
+export {colors}

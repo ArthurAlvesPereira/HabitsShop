@@ -1,114 +1,153 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
 import React, { Component } from 'react';
-import Heading from './Heading';
-import Input from './Input';
-import TaskList from './TaskList';
-import Button from './Button';
-import TabBar from './TabBar';
-
-//Parte de navigation
-
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import {AddItemShop} from './src/AddItemShop';
-import {TaskScreen} from './src/TaskScreen';
 
-let taskIndex = 0;
+import AddProduct from './src/AddProduct';
+import AddTask from './src/AddTask';
+import Tasks from './src/Tasks';
+import Products from './src/Products';
+import Habits from './src/Habits';
+import AddHabit from './src/AddHabit';
+import { PointsProvider } from './src/Points';
 
 const Tab = createMaterialBottomTabNavigator();
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      inputValue: '',
-      tasks: [],
-      type: 'All'
-    };
+const TaskStack = createStackNavigator();
+const ProductStack = createStackNavigator();
+const HabitsStack = createStackNavigator();
 
-    this.submitTask = this.submitTask.bind(this);
-    this.toggleComplete = this.toggleComplete.bind(this);
-    this.deleteTask = this.deleteTask.bind(this);
-    this.setType = this.setType.bind(this);
-  }
-
-  inputChange(inputValue) {
-    console.log('Input Value:', inputValue);
-    this.setState({ inputValue });
-  }
-
-  submitTask() {
-    if (this.state.inputValue.match(/^\s*$/)) {
-      return;
-    }
-
-    const task = {
-      title: this.state.inputValue,
-      taskIndex,
-      complete: false
-    };
-    
-    taskIndex++;
+export default class App extends Component {
+  state = {
+    tasks: [],
+    products: [],
+    habits: [],
+    totalPoints: 0,
+  };
+  
+  addTask = (task) => {
     const tasks = [...this.state.tasks, task];
-    this.setState({ tasks, inputValue: '' }, () => {
-      console.log('State:', this.state);
-    });
-  }
+    this.setState({ tasks });
+  };
 
-  toggleComplete(taskIndex) {
-    const tasks = this.state.tasks.map(task => {
-      if (task.taskIndex === taskIndex) {
-        return { ...task, complete: !task.complete };
+  toggleTaskCompletion = (taskId) => {
+    const updatedTasks = this.state.tasks.map(task => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          completed: !task.completed
+        };
       }
       return task;
     });
+  
+    const completedTask = updatedTasks.find(task => task.id === taskId && task.completed);
+    const newPoints = updatedTasks.reduce((totalPoints, task) => {
+      return totalPoints + (task.completed ? task.points : 0);
+    }, 0);
+  
+    this.setState({
+      tasks: updatedTasks,
+      totalPoints: newPoints
+    });
+  
+    if (completedTask) {
+      alert(`Task "${completedTask.text}" completed!`)
+    }
+  };
 
-    this.setState({ tasks });
-  }
+  addProduct = (product) => {
+    const products = [...this.state.products, product];
+    this.setState({ products });
+  };
 
-  deleteTask(taskIndex) {
-    const tasks = this.state.tasks.filter(task => task.taskIndex !== taskIndex);
-    this.setState({ tasks });
-  }
+  purchaseProduct = (productId) => {
+    const product = this.state.products.find(p => p.id === productId);
+    if (product && this.state.totalPoints >= product.price) {
+      this.setState(prevState => ({
+        totalPoints: prevState.totalPoints - product.price
+      }));
+    } else {
+      alert("Not enough points to purchase this product.");
+    }
+  };
 
-  setType(type) {
-    this.setState({ type });
-  }
+  addHabit = (habit) => {
+    const habits = [...this.state.habits, habit];
+    this.setState({ habits });
+  };
 
+  doHabit = (habitId) => {
+    const habit = this.state.habits.find(h => h.id === habitId);
+    if (habit) {
+      const points = habit.type === "good" ? habit.points : -habit.points;
+      this.setState(prevState => ({
+        totalPoints: prevState.totalPoints + points
+      }));
+    }
+  };
+
+  TaskStackScreen = () => (
+    <TaskStack.Navigator>
+      <TaskStack.Screen name="Tasks">
+        {(props) => <Tasks {...props} tasks={this.state.tasks} addTask={this.addTask} toggleTaskCompletion={this.toggleTaskCompletion} />}
+      </TaskStack.Screen>
+      <TaskStack.Screen name="AddTask">
+        {(props) => <AddTask {...props} addTask={this.addTask} />}
+      </TaskStack.Screen>
+    </TaskStack.Navigator>
+  );
+
+  ProductStackScreen = () => (
+    <ProductStack.Navigator>
+      <ProductStack.Screen name="Products">
+        {(props) => <Products {...props} products={this.state.products} purchaseProduct={this.purchaseProduct} />}
+      </ProductStack.Screen>
+      <ProductStack.Screen name="AddProduct">
+        {(props) => <AddProduct {...props} addProduct={this.addProduct} />}
+      </ProductStack.Screen>
+    </ProductStack.Navigator>
+  );
+
+  HabitsStackScreen = () => (
+    <HabitsStack.Navigator>
+      <HabitsStack.Screen name="Habits">
+        {(props) => <Habits {...props} habits={this.state.habits} doHabit={this.doHabit} />}
+      </HabitsStack.Screen>
+      <HabitsStack.Screen name="AddHabit">
+        {(props) => <AddHabit {...props} addHabit={this.addHabit} />}
+      </HabitsStack.Screen>
+    </HabitsStack.Navigator>
+  );
+  
   render() {
-    const { inputValue, tasks, type } = this.state;
-
-    // return (
-    //   <View style={styles.container}>
-    //     <ScrollView keyboardShouldPersistTaps='always' style={styles.content}>
-    //       <Heading />
-    //       <Input inputValue={inputValue} inputChange={(text) => this.inputChange(text)} />
-    //       <TaskList type={type} toggleComplete={this.toggleComplete} deleteTask={this.deleteTask} tasks={tasks} />
-    //       <Button submitTask={this.submitTask} />
-    //     </ScrollView>
-    //     <TabBar type={type} setType={this.setType} />
-    //   </View>
-    // );
-
     return (
+      <PointsProvider>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="TaskScreen" />
-          <Tab.Screen name="AddItem" component={AddItemShop} />
+          <Tab.Screen
+            name="Tasks"
+            component={this.TaskStackScreen}
+            options={{
+              tabBarLabel: 'Tasks',
+            }}
+          />
+          <Tab.Screen
+            name="Products"
+            component={this.ProductStackScreen}
+            options={{
+              tabBarLabel: 'Products',
+            }}
+          />
+          <Tab.Screen
+            name="Habits"
+            component={this.HabitsStackScreen}
+            options={{
+              tabBarLabel: 'Habits',
+            }}
+          />
         </Tab.Navigator>
       </NavigationContainer>
+      </PointsProvider>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#2f326e',
-  },
-  content: {
-    flex: 1,
-    paddingTop: 60,
-  },
-});
-
-export default App;
