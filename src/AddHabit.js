@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as Random from "expo-random";
+
+import { Colors, Styles } from "./Theme";
 
 const AddHabit = ({ addHabit, navigation }) => {
     const [text, setText] = useState("");
     const [points, setPoints] = useState("");
-    const [type, setType] = useState("good");
+    const [type, setType] = useState("Bom");
 
     const onChangeText = (value) => {
         setText(value);
@@ -36,86 +38,68 @@ const AddHabit = ({ addHabit, navigation }) => {
         addHabit(habit);
         setText("");
         setPoints("");
-        setType("good");
+        setType("Bom");
         navigation.goBack();
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    value={text}
-                    style={styles.input}
-                    placeholder="What habit do you want to form?"
-                    placeholderTextColor="#CACACA"
-                    selectionColor="#ffffff"
-                    onChangeText={onChangeText}
-                />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View style={Styles.container}>
+                <View style={Styles.inputContainer}>
+                    <TextInput
+                        value={text}
+                        style={Styles.input}
+                        placeholder="Qual hábito você deseja adicionar?"
+                        placeholderTextColor="#CACACA"
+                        selectionColor="#ffffff"
+                        onChangeText={onChangeText}
+                    />
+                </View>
+                <View style={Styles.inputContainer}>
+                    <TextInput
+                        value={points}
+                        style={Styles.input}
+                        placeholder="Pontos"
+                        placeholderTextColor="#CACACA"
+                        selectionColor="#ffffff"
+                        onChangeText={onChangePoints}
+                        keyboardType="numeric"
+                    />
+                </View>
+                <View style={Styles.inputContainer}>
+                    <Picker
+                        selectedValue={type}
+                        style={styles.picker}
+                        onValueChange={(itemValue, itemIndex) => onChangeType(itemValue)}
+                    >
+                        <Picker.Item label="Bom" value="Bom" />
+                        <Picker.Item label="Ruim" value="Ruim" />
+                    </Picker>
+                </View>
+                <View style={Styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={Styles.button}
+                        onPress={submit}
+                    >
+                        <Text style={Styles.buttonText}>Adicionar Habito</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    value={points}
-                    style={styles.input}
-                    placeholder="Points"
-                    placeholderTextColor="#CACACA"
-                    selectionColor="#ffffff"
-                    onChangeText={onChangePoints}
-                    keyboardType="numeric"
-                />
-            </View>
-            <View style={styles.inputContainer}>
-                <Picker
-                    selectedValue={type}
-                    style={styles.picker}
-                    onValueChange={(itemValue, itemIndex) => onChangeType(itemValue)}
-                >
-                    <Picker.Item label="Good" value="good" />
-                    <Picker.Item label="Bad" value="bad" />
-                </Picker>
-            </View>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={submit}
-                >
-                    <Text style={styles.buttonText}>Add Habit</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    inputContainer: {
-        marginBottom: 20,
-    },
-    input: {
-        backgroundColor: "#333333",
-        color: "#ffffff",
-        padding: 10,
-        borderRadius: 5,
-    },
+    
     picker: {
         height: 50,
         width: '100%',
         color: "#ffffff",
         backgroundColor: "#333333",
-    },
-    buttonContainer: {
-        alignItems: "center",
-    },
-    button: {
-        backgroundColor: "#4CAF50",
         padding: 10,
         borderRadius: 5,
     },
-    buttonText: {
-        color: "#ffffff",
-    },
+
 });
 
 export default AddHabit;

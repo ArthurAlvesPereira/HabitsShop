@@ -1,12 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
-import * as Random from "expo-random";
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Colors, Styles } from "./Theme";
+
+// Importa todas as imagens da pasta assets/recompensas
+const importAll = (r) => {
+  let images = {};
+  r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+  return images;
+};
+
+const images = importAll(require.context('../assets/recompensas', false, /\.(png|jpe?g|svg)$/));
 
 const AddProduct = ({ addProduct, navigation }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
 
-  const onChangeName = (value) => {
+  const selectImage = (image) => {
+    setSelectedImage(image);
+  };
+
+  const onChangeText = (value) => {
     setName(value);
   };
 
@@ -15,95 +29,85 @@ const AddProduct = ({ addProduct, navigation }) => {
   };
 
   const submit = () => {
-    if (name.trim() === "" || price.trim() === "") {
-      Alert.alert("Validation", "Please enter both a product name and price");
+    if (!selectedImage || name.trim() === "" || price.trim() === "") {
+      alert("Por favor, preencha todos os campos!");
       return;
     }
 
     const product = {
       name,
       price: parseFloat(price),
-      id: Random.getRandomBytes(8).join("")
+      image: selectedImage,
+      id: Date.now().toString(),
     };
 
     addProduct(product);
+
+    setSelectedImage(null);
     setName("");
     setPrice("");
+
     navigation.goBack();
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={name}
-          style={styles.input}
-          placeholder="Product Name"
-          placeholderTextColor="#CACACA"
-          selectionColor="#ffffff"
-          onChangeText={onChangeName}
-        />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={Styles.container}>
+        <View style={styles.imageContainer}>
+          {Object.keys(images).map((imageName, index) => (
+            <TouchableOpacity key={index} onPress={() => selectImage(images[imageName])}>
+              <Image
+                source={images[imageName]}
+                style={[styles.image, selectedImage === images[imageName] && styles.selectedImage]}
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={Styles.inputContainer}>
+          <TextInput
+            value={name}
+            style={Styles.input}
+            onChangeText={onChangeText}
+            placeholder="Nome do produto"
+            placeholderTextColor="#CCCCCC"
+          />
+        </View>
+        <View style={Styles.inputContainer}>
+          <TextInput
+            style={Styles.input}
+            value={price}
+            onChangeText={onChangePrice}
+            placeholder="Preço do produto"
+            placeholderTextColor="#CCCCCC"
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={Styles.buttonContainer}>
+          <TouchableOpacity style={Styles.button} onPress={submit}>
+            <Text style={Styles.buttonText}>Adicionar Produto</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={price}
-          style={styles.input}
-          placeholder="Price"
-          placeholderTextColor="#CACACA"
-          selectionColor="#ffffff"
-          keyboardType="numeric"
-          onChangeText={onChangePrice}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={submit}
-          accessibilityLabel="Submit Product"
-          accessibilityRole="button"
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginLeft: 20,
-    marginRight: 20
-  },
-  inputContainer: {
+  imageContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     marginBottom: 20,
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowColor: '#000000',
-    shadowOffset: { width: 2, height: 2 }
   },
-  input: {
-    height: 60,
-    backgroundColor: '#ffffff',
-    paddingLeft: 10,
-    paddingRight: 10
+  image: {
+    width: 100,
+    height: 100,
+    margin: 10,
   },
-  buttonContainer: {
-    height: 60,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowColor: '#000000',
-    shadowOffset: { width: 2, height: 2 }
+  selectedImage: {
+    borderWidth: 2,
+    borderColor: Colors.dark,
   },
-  button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  buttonText: {
-    color: '#666666',
-    fontWeight: 'bold'
-  }
 });
 
 export default AddProduct;

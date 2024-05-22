@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
 import * as Random from "expo-random";
-import { colors } from "./Theme";
+import { Styles } from "./Theme";
 
 const AddTask = ({ addTask, navigation }) => {
   const [text, setText] = useState("");
@@ -13,11 +13,11 @@ const AddTask = ({ addTask, navigation }) => {
 
   const onChangePoints = (value) => {
     setPoints(value);
-    };
+  };
 
   const submit = () => {
     if (text.trim() === "") {
-      Alert.alert("Validation", "Please enter a task");
+      Alert.alert("Por favor coloque uma tarefa!");
       return;
     }
 
@@ -34,77 +34,37 @@ const AddTask = ({ addTask, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={text}
-          style={styles.input}
-          placeholder="What needs to be done?"
-          placeholderTextColor="#CACACA"
-          selectionColor="#ffffff"
-          onChangeText={onChangeText}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-            value={points}
-            style={styles.input}
-            placeholder="Points"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={Styles.container}>
+        <View style={Styles.inputContainer}>
+          <TextInput
+            value={text}
+            style={Styles.input}
+            placeholder="O que você precisa fazer?"
             placeholderTextColor="#CACACA"
             selectionColor="#ffffff"
-            onChangeText={onChangePoints}
-        />
+            onChangeText={onChangeText}
+          />
         </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={submit}
-          accessibilityLabel="Submit Task"
-          accessibilityRole="button"
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+        <View style={Styles.inputContainer}>
+          <TextInput
+              value={points}
+              style={Styles.input}
+              placeholder="Pontos"
+              placeholderTextColor="#CACACA"
+              selectionColor="#ffffff"
+              onChangeText={onChangePoints}
+              keyboardType="numeric"
+          />
+        </View>
+        <View style={Styles.buttonContainer}>
+          <TouchableOpacity style={Styles.button} onPress={submit}>
+            <Text style={Styles.buttonText}>Adicionar Tarefa</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginLeft: 20,
-    marginRight: 20
-  },
-  inputContainer: {
-    marginLeft: 20,
-    marginRight: 20,
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowColor: '#000000',
-    shadowOffset: { width: 2, height: 2 }
-  },
-  input: {
-    height: 60,
-    backgroundColor: '#ffffff',
-    paddingLeft: 10,
-    paddingRight: 10
-  },
-  buttonContainer: {
-    height: 60,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowColor: '#000000',
-    shadowOffset: { width: 2, height: 2 }
-  },
-  button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  buttonText: {
-    color: '#666666',
-    fontWeight: 'bold'
-  }
-});
 
 export default AddTask;
