@@ -2,19 +2,20 @@ import React, { useContext, useEffect } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { PointsContext } from './Points';
+import { Colors, Styles } from './Theme';
 
 const Header = ({ totalPoints }) => (
-    <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>{`Total Points: ${totalPoints}`}</Text>
+    <View style={Styles.headerContainer}>
+        <Text style={Styles.headerText}>{`Pontos: ${totalPoints}`}</Text>
     </View>
 );
 
 const Habit = ({ habit, doHabit }) => (
     <View style={styles.habitContainer}>
         <Text style={styles.habitText}>{habit.text}</Text>
-        <Text style={styles.pointsText}>{`Points: ${habit.points}`}</Text>
-        <Text style={styles.typeText}>{`Type: ${habit.type}`}</Text>
-        <Button title="Do" onPress={() => doHabit(habit.id)} />
+        <Text style={styles.pointsText}>{`Pontos: ${habit.points}`}</Text>
+        <Text style={styles.typeText}>{`Tipo: ${habit.type}`}</Text>
+        <Button title="+" onPress={() => doHabit(habit.id)} />
     </View>
 );
 
@@ -27,7 +28,7 @@ const HabitsList = ({ habits, doHabit }) => {
 const Habits = ({ habits, doHabit }) => {
     const navigation = useNavigation();
     const { totalPoints, addPoints } = useContext(PointsContext);
-    
+
     useEffect(() => {
         let points = 0;
         habits.forEach(habit => {
@@ -37,21 +38,21 @@ const Habits = ({ habits, doHabit }) => {
         });
         addPoints(points);
     }, [habits, addPoints]);
-    
+
     const handleDoHabit = (habitId) => {
         const habit = habits.find(h => h.id === habitId);
         if (habit) {
-            const points = habit.type === "bad" ? -habit.points : habit.points;
+            const points = habit.type === "Ruim" ? -habit.points : habit.points;
             addPoints(points);
             doHabit(habitId);
         }
     };
-    
+
     return (
-        <View style={styles.container}>
+        <View style={Styles.containerDisplay}>
             <Header totalPoints={totalPoints} />
-            <Text style={styles.title}>Habits</Text>
-            <Button title="Add Habit" onPress={() => navigation.navigate('AddHabit')} />
+            <Text style={Styles.title}>Habitos</Text>
+            <Button title="Adicionar Habitos" onPress={() => navigation.navigate('AddHabit')} />
             <HabitsList habits={habits} doHabit={handleDoHabit} />
         </View>
     );
@@ -59,29 +60,18 @@ const Habits = ({ habits, doHabit }) => {
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    headerContainer: {
-        marginBottom: 20,
-    },
-    headerText: {
-        fontSize: 20,
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-    },
+
     habitContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
         padding: 10,
-        marginBottom: 10,
+        marginVertical: 5,
         backgroundColor: "#f9f9f9",
         borderRadius: 5,
-    },
+        maxWidth: "100%", // Garante que o container não ultrapasse a largura da tela
+        width: "100%", // Garante que o container ocupe toda a largura disponível
+      },
     habitText: {
         fontSize: 16,
     },

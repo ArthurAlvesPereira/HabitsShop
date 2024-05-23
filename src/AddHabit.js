@@ -90,7 +90,7 @@ const AddHabit = ({ addHabit, navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    
+
     picker: {
         height: 50,
         width: '100%',

@@ -48,13 +48,13 @@ const AddTask = ({ addTask, navigation }) => {
         </View>
         <View style={Styles.inputContainer}>
           <TextInput
-              value={points}
-              style={Styles.input}
-              placeholder="Pontos"
-              placeholderTextColor="#CACACA"
-              selectionColor="#ffffff"
-              onChangeText={onChangePoints}
-              keyboardType="numeric"
+            value={points}
+            style={Styles.input}
+            placeholder="Pontos"
+            placeholderTextColor="#CACACA"
+            selectionColor="#ffffff"
+            onChangeText={onChangePoints}
+            keyboardType="numeric"
           />
         </View>
         <View style={Styles.buttonContainer}>

@@ -1,19 +1,21 @@
 import React, { useContext } from 'react';
-import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { PointsContext } from './Points';
+import { Colors, Styles } from './Theme';
 
 const Header = ({ totalPoints }) => (
-  <View style={styles.headerContainer}>
-    <Text style={styles.headerText}>Total Points: {totalPoints}</Text>
+  <View style={Styles.headerContainer}>
+    <Text style={Styles.headerText}>Pontos: {totalPoints}</Text>
   </View>
 );
 
 const Product = ({ product, onPress }) => (
   <TouchableOpacity onPress={onPress}>
     <View style={styles.productContainer}>
+      <Image source={product.image} style={styles.image} />
       <Text style={styles.productText}>{product.name}</Text>
-      <Text style={styles.priceText}>{`Price: ${product.price}`}</Text>
+      <Text style={styles.priceText}>{`Pontos: ${product.price}`}</Text>
     </View>
   </TouchableOpacity>
 );
@@ -36,17 +38,17 @@ const Products = ({ products }) => {
     const product = products.find(p => p.id === productId);
     if (product && totalPoints >= product.price) {
       subtractPoints(product.price);
-      alert("Success", "Product purchased successfully!");
+      Alert.alert("Parabéns", `Agora vai desfrutar da sua recompensa!`);
     } else {
-      alert("Error", "Not enough points to purchase this product.");
+      Alert.alert("Ops", "Você não tem pontos suficientes para comprar esta recompensa.");
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={Styles.containerDisplay}>
       <Header totalPoints={totalPoints} />
-      <Text style={styles.title}>Products</Text>
-      <Button title="Add Product" onPress={() => navigation.navigate('AddProduct')} />
+      <Text style={Styles.title}>Recompensa</Text>
+      <Button title="Adcionar Recompensa" onPress={() => navigation.navigate('AddProduct')} />
       <ProductsList products={products} purchaseProduct={purchaseProduct} />
     </View>
   );
@@ -54,24 +56,7 @@ const Products = ({ products }) => {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  headerContainer: {
-    paddingTop: 20,
-    paddingBottom: 10,
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
+
   productContainer: {
     padding: 10,
     marginVertical: 5,
@@ -84,6 +69,12 @@ const styles = StyleSheet.create({
   priceText: {
     fontSize: 16,
     color: '#888',
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    alignSelf: 'center',
   },
 });
 
