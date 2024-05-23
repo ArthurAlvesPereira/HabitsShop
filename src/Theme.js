@@ -8,9 +8,11 @@ export const Colors = {
     warning: '#ffc107',
     info: '#17a2b8',
     light: '#ffffff',
-    dark: '#343a40',
-    background: '#050c54',
+    dark: '#272d2f',
+    background: '#D7D7D7',
     black: '#000000',
+    container: '#ffc529',
+    orange: 'fe7240',
 };
 
 export const Fonts = {
@@ -38,13 +40,14 @@ export const Styles = {
     headerText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: Colors.light,
+        color: Colors.dark,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: Colors.light,
+        color: Colors.dark,
+        textAlign: 'center',
     },
     taskContainer: {
         padding: 10,
@@ -92,7 +95,7 @@ export const Styles = {
         alignItems: "center",
     },
     button: {
-        backgroundColor: "#4CAF50",
+        backgroundColor: "#55c2da",
         padding: 10,
         borderRadius: 5,
     },

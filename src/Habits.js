@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { PointsContext } from './Points';
 import { Colors, Styles } from './Theme';
@@ -15,7 +15,7 @@ const Habit = ({ habit, doHabit }) => (
         <Text style={styles.habitText}>{habit.text}</Text>
         <Text style={styles.pointsText}>{`Pontos: ${habit.points}`}</Text>
         <Text style={styles.typeText}>{`Tipo: ${habit.type}`}</Text>
-        <Button title="+" onPress={() => doHabit(habit.id)} />
+        <Button color={'#fe7240'} title="+" onPress={() => doHabit(habit.id)} />
     </View>
 );
 
@@ -52,7 +52,11 @@ const Habits = ({ habits, doHabit }) => {
         <View style={Styles.containerDisplay}>
             <Header totalPoints={totalPoints} />
             <Text style={Styles.title}>Habitos</Text>
-            <Button title="Adicionar Habitos" onPress={() => navigation.navigate('AddHabit')} />
+            <View style={Styles.buttonContainer}>
+                <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate('AddHabit')}>
+                    <Text style={Styles.buttonText}>Adicionar Hábito</Text>
+                </TouchableOpacity>
+            </View>
             <HabitsList habits={habits} doHabit={handleDoHabit} />
         </View>
     );
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         padding: 10,
         marginVertical: 5,
-        backgroundColor: "#f9f9f9",
+        backgroundColor: Colors.container,
         borderRadius: 5,
         maxWidth: "100%", // Garante que o container não ultrapasse a largura da tela
         width: "100%", // Garante que o container ocupe toda a largura disponível

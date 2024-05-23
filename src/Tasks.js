@@ -43,9 +43,13 @@ const Tasks = ({ tasks, toggleTaskCompletion }) => {
   return (
     <View style={Styles.containerDisplay}>
       <Header totalPoints={totalPoints} />
-      <Text style={Styles.title}>Tarefa</Text>
-      <Button title="Adicionar Tarefa" onPress={() => navigation.navigate('AddTask')} />
-      <TasksList tasks={tasks} toggleTaskCompletion={handleToggleTaskCompletion} />
+      <Text style={Styles.title}>Tarefas</Text>
+      <View style={Styles.buttonContainer}>
+        <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate('AddTask')}>
+          <Text style={Styles.buttonText}>Adicionar Tarefa</Text>
+        </TouchableOpacity>
+      </View>
+      <TasksList style tasks={tasks} toggleTaskCompletion={handleToggleTaskCompletion} />
     </View>
   );
 };
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
   taskContainer: {
     padding: 10,
     marginVertical: 5,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: Colors.container,
     borderRadius: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',

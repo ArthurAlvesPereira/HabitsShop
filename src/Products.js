@@ -47,8 +47,12 @@ const Products = ({ products }) => {
   return (
     <View style={Styles.containerDisplay}>
       <Header totalPoints={totalPoints} />
-      <Text style={Styles.title}>Recompensa</Text>
-      <Button title="Adcionar Recompensa" onPress={() => navigation.navigate('AddProduct')} />
+      <Text style={Styles.title}>Recompensas</Text>
+      <View style={Styles.buttonContainer}>
+        <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate('AddProduct')}>
+          <Text style={Styles.buttonText}>Adicionar Recompensa</Text>
+        </TouchableOpacity>
+      </View>
       <ProductsList products={products} purchaseProduct={purchaseProduct} />
     </View>
   );

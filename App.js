@@ -98,7 +98,7 @@ export default class App extends Component {
       screenOptions={{
         cardStyle: { backgroundColor: Colors.background },
         headerStyle: { backgroundColor: Colors.background },
-        headerTintColor: Colors.light,
+        headerTintColor: Colors.dark,
       }}>
       <TaskStack.Screen name="Tasks"
         options={{ title: 'Tarefas' }}>
@@ -117,9 +117,10 @@ export default class App extends Component {
       screenOptions={{
         cardStyle: { backgroundColor: Colors.background },
         headerStyle: { backgroundColor: Colors.background },
-        headerTintColor: Colors.light,
+        headerTintColor: Colors.dark,
       }}>
       <ProductStack.Screen name="Products"
+      
         options={{ title: 'Recompensas' }}>
         {(props) => <Products {...props} products={this.state.products} purchaseProduct={this.purchaseProduct} totalPoints={this.state.totalPoints} />}
       </ProductStack.Screen>
@@ -135,7 +136,7 @@ export default class App extends Component {
       screenOptions={{
         cardStyle: { backgroundColor: Colors.background },
         headerStyle: { backgroundColor: Colors.background },
-        headerTintColor: Colors.light,
+        headerTintColor: Colors.dark,
       }}>
       <HabitsStack.Screen name="Habits"
         options={{ title: 'Habitos' }}>
@@ -155,9 +156,9 @@ export default class App extends Component {
           <Tab.Navigator
             shifting={false}
             initialRouteName='Tasks'
-            barStyle={{ backgroundColor: Colors.background }}
-            activeColor='#000000'
-            inactiveColor='#00000'
+            barStyle={{ backgroundColor: Colors.dark }}
+            activeColor= {Colors.light}
+            inactiveColor= {Colors.light}
             screenOptions={{
               tabBarStyle: { borderTopWidth: 2, borderTopColor: '#000000' }
 
